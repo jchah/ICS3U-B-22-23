@@ -73,9 +73,10 @@ public class GoFish {
                 cards4 = cards4.replaceFirst(card, "");
                 System.out.printf("You got %s from player %d", card, player);
             } else {
-                System.out.printf("Player %d says \"Go fish!\"", player);
                 card = getCard();
-                System.out.printf("You randomly draw %s", card);
+                cards1 += card;
+                System.out.printf("Player %d says \"Go fish!\" You randomly draw %s\n", player, card);
+                System.out.println(cards1);
             }
         }
     }
