@@ -38,19 +38,22 @@ public class GoFish {
         score4 += parseScore(temp);
 
         while (score1 < 10 && score2 < 10 && score3 < 10 && score4 < 10) {
-            System.out.println("Pair adjusted hand: " + cards1);
+            // On last run of for loop hands with no cards don't reach fixHand in time
+            cards1 = fixHand(cards1);
+            cards2 = fixHand(cards2);
+            cards3 = fixHand(cards3);
+            cards4 = fixHand(cards4);
+
+            System.out.println("Adjusted hand: " + cards1);
             System.out.println("Player 1 (you) score: " + score1);
             System.out.println("Player 2 score: " + score2);
             System.out.println("Player 3 score: " + score3);
             System.out.println("Player 4 score: " + score4);
 
-            System.out.println("cards2: " + cards2);
-            System.out.println("cards3: " + cards3);
-            System.out.println("cards4: " + cards4);
-
-            System.out.print("Card request: ");
+            // TODO: Disallow illegal input
+            System.out.print("Card request (2...9, X, J, Q, K, A): ");
             String face = in.nextLine();
-            System.out.print("From player: ");
+            System.out.print("From player (2, 3, 4): ");
             int player = in.nextInt();
             in.nextLine(); // clears buffer
 
@@ -83,11 +86,11 @@ public class GoFish {
             score1 += parseScore(temp);
 
             for(int i = 2; i < 5; i++) {
-                //FIXME On last iteration hands with one card will not be fixed if it's given away
                 cards1 = fixHand(cards1);
                 cards2 = fixHand(cards2);
                 cards3 = fixHand(cards3);
                 cards4 = fixHand(cards4);
+                // randPlayer must be different from player asking (i)
                 while (randPlayer == i) {
                     randPlayer = (int) (Math.random() * 4) + 1;
                 }
@@ -149,6 +152,7 @@ public class GoFish {
                     cards4 = hand;
                 }
                 beginIndex = 1;
+                randPlayer = (int) (Math.random() * 4) + 1;
             }
         }
     }
@@ -183,24 +187,28 @@ public class GoFish {
 
     private static String getFace() {
         int rng = (int) (Math.random() * NUM_FACE) + 1;
-        return switch (rng) {
-            case 1 -> "A";
-            case 10 -> "X";
-            case 11 -> "J";
-            case 12 -> "Q";
-            case 13 -> "K";
-            default -> rng + "";
-        };
+        if (rng == 1)
+            return "A";
+        if (rng == 10)
+            return "X";
+        if (rng == 11)
+            return "J";
+        if (rng == 12)
+            return "Q";
+        if (rng == 13)
+            return "K";
+        return rng + "";
     }
 
     private static String getSuit() {
         int rng = (int) (Math.random() * NUM_SUITS) + 1;
-        return switch (rng) {
-            case 1 -> "H";
-            case 2 -> "C";
-            case 3 -> "S";
-            default -> "D";
-        };
+        if (rng == 1)
+            return "H";
+        if (rng == 2)
+            return "C";
+        if (rng == 3)
+            return "S";
+        return "D";
     }
 
     private static String checkPairs(String hand) {
