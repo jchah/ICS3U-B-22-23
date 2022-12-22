@@ -5,7 +5,7 @@ public class GoFish {
     private static final int NUM_FACE = 13;
     private static final int NUM_SUITS = 4;
     private static final int RESET_CARDS = -2;
-    private static final int MAX_SCORE = 10;
+    private static final int MAX_SCORE = 2;
     static final Scanner in = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -164,6 +164,7 @@ public class GoFish {
                 System.out.println("\nPlayer 4 wins!");
 
             if (score1 >= MAX_SCORE || score2 >= MAX_SCORE || score3 >= MAX_SCORE || score4 >= MAX_SCORE) {
+                System.out.println("\nFinal round tallies: \n");
                 displayScores(score1, score2, score3, score4);
                 System.err.println("Play again? ([y]es/[n]o): ");
                 playAgain = in.nextLine();
