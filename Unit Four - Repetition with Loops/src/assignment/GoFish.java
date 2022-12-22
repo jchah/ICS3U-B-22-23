@@ -5,7 +5,7 @@ public class GoFish {
     private static final int NUM_FACE = 13;
     private static final int NUM_SUITS = 4;
     private static final int RESET_CARDS = -2;
-    private static final int MAX_SCORE = 2;
+    private static final int MAX_SCORE = 10;
     static final Scanner in = new Scanner(System.in);
 
     public static void main(String[] args) {
