@@ -240,7 +240,7 @@ public class GoFish {
             return hand;
         }
         String temp = getHand();
-        System.out.println("Gave new hand: " + temp);
+        System.out.println("Gave new hand");
         return temp;
     }
 
