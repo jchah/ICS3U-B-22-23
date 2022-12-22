@@ -5,7 +5,9 @@ public class GoFish {
     private static final int NUM_FACE = 13;
     private static final int NUM_SUITS = 4;
     private static final int RESET_CARDS = -2;
-    static final Scanner in  = new Scanner(System.in);
+    private static final int MAX_SCORE = 10;
+    static final Scanner in = new Scanner(System.in);
+
     public static void main(String[] args) {
         String cards1, cards2, cards3, cards4;
         int score1 = 0, score2 = 0, score3 = 0, score4 = 0;
@@ -16,13 +18,13 @@ public class GoFish {
         int beginIndex = 1; // 1 % 2 != 0
         int randPlayer = (int) (Math.random() * 4) + 1;
         String randCard;
+        boolean gameOver = false;
+        String playAgain;
 
         cards1 = getHand();
         cards2 = getHand();
         cards3 = getHand();
         cards4 = getHand();
-
-        System.out.println("Original draw: " + cards1);
 
         temp = checkPairs(cards1);
         cards1 = parseHand(temp);
@@ -37,7 +39,7 @@ public class GoFish {
         cards4 = parseHand(temp);
         score4 += parseScore(temp);
 
-        while (score1 < 10 && score2 < 10 && score3 < 10 && score4 < 10) {
+        while (!gameOver) {
             // On last run of for loop hands with no cards don't reach fixHand in time
             cards1 = fixHand(cards1);
             cards2 = fixHand(cards2);
@@ -50,12 +52,13 @@ public class GoFish {
             System.out.println("Player 3 score: " + score3);
             System.out.println("Player 4 score: " + score4);
 
-            // TODO: Disallow illegal input
-            System.out.print("Card request (2...9, X, J, Q, K, A): ");
-            String face = in.nextLine();
-            System.out.print("From player (2, 3, 4): ");
-            int player = in.nextInt();
-            in.nextLine(); // clears buffer
+            String face = "";
+            while (!face.matches("[23456789XJQKA]")) {
+                System.out.print("Card request (2...9, X, J, Q, K, A): ");
+                face = in.nextLine();
+            }
+
+            int player = choosePlayer();
 
             if (player == 2 && cards2.contains(face)) {
                 suit = cards2.charAt(cards2.indexOf(face) + 1) + "";
@@ -85,7 +88,7 @@ public class GoFish {
             cards1 = parseHand(temp);
             score1 += parseScore(temp);
 
-            for(int i = 2; i < 5; i++) {
+            for (int i = 2; i < 5; i++) {
                 cards1 = fixHand(cards1);
                 cards2 = fixHand(cards2);
                 cards3 = fixHand(cards3);
@@ -143,8 +146,7 @@ public class GoFish {
                 if (i == 2) {
                     score2 += parseScore(temp);
                     cards2 = hand;
-                }
-                else if (i == 3) {
+                } else if (i == 3) {
                     score3 += parseScore(temp);
                     cards3 = hand;
                 } else {
@@ -153,6 +155,63 @@ public class GoFish {
                 }
                 beginIndex = 1;
                 randPlayer = (int) (Math.random() * 4) + 1;
+            }
+            if (score1 >= MAX_SCORE)
+                System.out.println("Player 1 wins!");
+            else if (score2 >= MAX_SCORE)
+                System.out.println("Player 2 wins!");
+            else if (score3 >= MAX_SCORE)
+                System.out.println("Player 3 wins!");
+            else System.out.println("Player 4 wins!");
+
+            if (score1 >= MAX_SCORE || score2 >= MAX_SCORE || score3 >= MAX_SCORE || score4 >= MAX_SCORE)
+                System.out.print("Play again? ([y]es/[n]o): ");
+
+            playAgain = in.nextLine();
+
+            if (playAgain.toLowerCase().matches("y|yes")) {
+                score1 = 0;
+                score2 = 0;
+                score3 = 0;
+                score4 = 0;
+
+                cards1 = getHand();
+                cards2 = getHand();
+                cards3 = getHand();
+                cards4 = getHand();
+
+                temp = checkPairs(cards1);
+                cards1 = parseHand(temp);
+                score1 += parseScore(temp);
+                temp = checkPairs(cards2);
+                cards2 = parseHand(temp);
+                score2 += parseScore(temp);
+                temp = checkPairs(cards3);
+                cards3 = parseHand(temp);
+                score3 += parseScore(temp);
+                temp = checkPairs(cards4);
+                cards4 = parseHand(temp);
+                score4 += parseScore(temp);
+
+                System.err.println("----------Game reset----------\n");
+            } else if (playAgain.toLowerCase().matches("n|no")) {
+                System.err.println("----------Game ended----------");
+                gameOver = true;
+            }
+        }
+    }
+
+    private static int choosePlayer() {
+        while(true) {
+            System.out.println("Player to ask (2, 3, 4): ");
+            try {
+                int p = Integer.parseInt(in.nextLine());
+                if(p > 3 || p < 1)
+                    System.err.println("Please enter a valid input\n");
+                else
+                    return p + 1; // +1 b/c com values are 1 higher than the options shown
+            } catch(NumberFormatException e) {
+                System.err.println("Please enter a valid input\n");
             }
         }
     }
@@ -213,15 +272,15 @@ public class GoFish {
 
     private static String checkPairs(String hand) {
         int count = 0;
-        for (int i = 0; i < hand.length() - 1; i+=2) {
-            String c = hand.charAt(i) + "";
-            String temp = hand.substring(hand.indexOf(c) + 2);
-            if(temp.contains(c)) {
-                count++;
-                hand = hand.substring(0, i) + temp.substring(0, temp.indexOf(c)) + temp.substring(temp.indexOf(c) + 2);
-                i = RESET_CARDS;
+            for (int i = 0; i < hand.length() - 1; i += 2) {
+                String c = hand.charAt(i) + "";
+                String temp = hand.substring(hand.indexOf(c) + 2);
+                if (temp.contains(c)) {
+                    count++;
+                    hand = hand.substring(0, i) + temp.substring(0, temp.indexOf(c)) + temp.substring(temp.indexOf(c) + 2);
+                    i = RESET_CARDS;
+                }
             }
-        }
         return hand + "~" + count;
     }
 }
