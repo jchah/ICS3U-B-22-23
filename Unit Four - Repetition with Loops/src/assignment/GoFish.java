@@ -5,7 +5,7 @@ public class GoFish {
     private static final int NUM_FACE = 13;
     private static final int NUM_SUITS = 4;
     private static final int RESET_CARDS = -2;
-    private static final int MAX_SCORE = 10;
+    private static final int MAX_SCORE = 2;
     static final Scanner in = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -162,10 +162,11 @@ public class GoFish {
                 System.out.println("Player 2 wins!");
             else if (score3 >= MAX_SCORE)
                 System.out.println("Player 3 wins!");
-            else System.out.println("Player 4 wins!");
+            else if (score4 >= MAX_SCORE)
+                System.out.println("Player 4 wins!");
 
             if (score1 >= MAX_SCORE || score2 >= MAX_SCORE || score3 >= MAX_SCORE || score4 >= MAX_SCORE)
-                System.out.print("Play again? ([y]es/[n]o): ");
+                System.out.println("Play again? ([y]es/[n]o): ");
 
             playAgain = in.nextLine();
 
@@ -206,10 +207,10 @@ public class GoFish {
             System.out.println("Player to ask (2, 3, 4): ");
             try {
                 int p = Integer.parseInt(in.nextLine());
-                if(p > 3 || p < 1)
+                if(p > 4 || p < 2)
                     System.err.println("Please enter a valid input\n");
                 else
-                    return p + 1; // +1 b/c com values are 1 higher than the options shown
+                    return p;
             } catch(NumberFormatException e) {
                 System.err.println("Please enter a valid input\n");
             }
