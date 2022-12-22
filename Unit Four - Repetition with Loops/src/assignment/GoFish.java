@@ -5,7 +5,7 @@ public class GoFish {
     private static final int NUM_FACE = 13;
     private static final int NUM_SUITS = 4;
     private static final int RESET_CARDS = -2;
-    private static final int MAX_SCORE = 10;
+    private static final int MAX_SCORE = 2;
     static final Scanner in = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -46,15 +46,12 @@ public class GoFish {
             cards3 = fixHand(cards3);
             cards4 = fixHand(cards4);
 
-            System.out.println("Adjusted hand: " + cards1);
-            System.out.println("Player 1 (you) score: " + score1);
-            System.out.println("Player 2 score: " + score2);
-            System.out.println("Player 3 score: " + score3);
-            System.out.println("Player 4 score: " + score4);
+            displayCards(cards1, cards2, cards3, cards4);
+            displayScores(score1, score2, score3, score4);
 
             String face = "";
             while (!face.matches("[23456789XJQKA]")) {
-                System.out.print("Card request (2...9, X, J, Q, K, A): ");
+                System.out.println("Card request (2...9, X, J, Q, K, A): ");
                 face = in.nextLine();
             }
 
@@ -156,50 +153,70 @@ public class GoFish {
                 beginIndex = 1;
                 randPlayer = (int) (Math.random() * 4) + 1;
             }
+
             if (score1 >= MAX_SCORE)
-                System.out.println("Player 1 wins!");
+                System.out.println("\nPlayer 1 wins!");
             else if (score2 >= MAX_SCORE)
-                System.out.println("Player 2 wins!");
+                System.out.println("\nPlayer 2 wins!");
             else if (score3 >= MAX_SCORE)
-                System.out.println("Player 3 wins!");
+                System.out.println("\nPlayer 3 wins!");
             else if (score4 >= MAX_SCORE)
-                System.out.println("Player 4 wins!");
+                System.out.println("\nPlayer 4 wins!");
 
-            if (score1 >= MAX_SCORE || score2 >= MAX_SCORE || score3 >= MAX_SCORE || score4 >= MAX_SCORE)
-                System.out.println("Play again? ([y]es/[n]o): ");
+            if (score1 >= MAX_SCORE || score2 >= MAX_SCORE || score3 >= MAX_SCORE || score4 >= MAX_SCORE) {
+                displayScores(score1, score2, score3, score4);
+                System.err.println("Play again? ([y]es/[n]o): ");
+                playAgain = in.nextLine();
 
-            playAgain = in.nextLine();
+                if (playAgain.toLowerCase().matches("y|yes")) {
+                    score1 = 0;
+                    score2 = 0;
+                    score3 = 0;
+                    score4 = 0;
 
-            if (playAgain.toLowerCase().matches("y|yes")) {
-                score1 = 0;
-                score2 = 0;
-                score3 = 0;
-                score4 = 0;
+                    cards1 = getHand();
+                    cards2 = getHand();
+                    cards3 = getHand();
+                    cards4 = getHand();
 
-                cards1 = getHand();
-                cards2 = getHand();
-                cards3 = getHand();
-                cards4 = getHand();
+                    temp = checkPairs(cards1);
+                    cards1 = parseHand(temp);
+                    score1 += parseScore(temp);
+                    temp = checkPairs(cards2);
+                    cards2 = parseHand(temp);
+                    score2 += parseScore(temp);
+                    temp = checkPairs(cards3);
+                    cards3 = parseHand(temp);
+                    score3 += parseScore(temp);
+                    temp = checkPairs(cards4);
+                    cards4 = parseHand(temp);
+                    score4 += parseScore(temp);
 
-                temp = checkPairs(cards1);
-                cards1 = parseHand(temp);
-                score1 += parseScore(temp);
-                temp = checkPairs(cards2);
-                cards2 = parseHand(temp);
-                score2 += parseScore(temp);
-                temp = checkPairs(cards3);
-                cards3 = parseHand(temp);
-                score3 += parseScore(temp);
-                temp = checkPairs(cards4);
-                cards4 = parseHand(temp);
-                score4 += parseScore(temp);
+                    System.err.println("----------Game reset----------\n");
 
-                System.err.println("----------Game reset----------\n");
-            } else if (playAgain.toLowerCase().matches("n|no")) {
-                System.err.println("----------Game ended----------");
-                gameOver = true;
+                } else if (playAgain.toLowerCase().matches("n|no")) {
+                    System.err.println("----------Game ended----------");
+                    gameOver = true;
+                }
             }
         }
+    }
+
+    private static void displayCards(String cards1, String cards2, String cards3, String cards4) {
+        String hidden2 = cards2.replaceAll("[^ ]", "X");
+        String hidden3 = cards3.replaceAll("[^ ]", "X");
+        String hidden4 = cards4.replaceAll("[^ ]", "X");
+        System.out.println("Player 1 (you) adjusted hand: " + cards1);
+        System.out.println("Player 2 hand: " + hidden2);
+        System.out.println("Player 3 hand: " + hidden3);
+        System.out.println("Player 4 hand: " + hidden4 + "\n");
+    }
+
+    private static void displayScores(int score1, int score2, int score3, int score4) {
+        System.out.println("Player 1 (you) score: " + score1);
+        System.out.println("Player 2 score: " + score2);
+        System.out.println("Player 3 score: " + score3);
+        System.out.println("Player 4 score: " + score4 + "\n");
     }
 
     private static int choosePlayer() {
