@@ -158,7 +158,7 @@ public class DoubleArraySequence implements Cloneable {
      **/
     public void addBefore(double element) {
         // Set index to current index or 0 if no current element
-        int index = currentIndex != manyItems ? currentIndex : 0;
+        int index = isCurrent() ? currentIndex : 0;
 
         double[] temp = new double[data.length];
 
