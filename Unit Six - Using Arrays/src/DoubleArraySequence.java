@@ -260,7 +260,6 @@ public class DoubleArraySequence implements Cloneable {
         if(isCurrent()){
             currentIndex++;
         }else {
-            manyItems = currentIndex;
             throw new IllegalStateException("Element not found");
         }
 
